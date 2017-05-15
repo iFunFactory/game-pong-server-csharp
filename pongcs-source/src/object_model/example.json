@@ -1,0 +1,9 @@
+{
+  "User": {
+    "Id": "String(64) KEY",
+    "WinCount": "Integer",
+    "LoseCount": "Integer",
+    "WinningStreak": "Integer",
+    "WinningStreakDayOfYear": "Integer"
+  }
+}

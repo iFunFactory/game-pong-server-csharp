@@ -1,0 +1,53 @@
+{
+  "version": 1,
+  "components": [
+    {
+      "name": "PongcsServer",
+      "arguments": {
+        "example_arg1": "val1",
+        "example_arg2": 100
+      },
+      "dependency": {
+          "AppInfo": {
+            "app_id": "Pongcs",
+            "client_current_version": "0.0.3",
+            "client_compatible_versions": ["0.0.1", "0.0.2"],
+            "client_update_info": "",
+            "client_update_uri": ""
+          },
+          "EventDispatcher": {
+             "event_threads_size": 1,
+             "enable_event_profiler": true,
+             "slow_event_log_threshold_in_ms": 300,
+             "event_timeout_in_ms": 30000,
+             "enable_inheriting_event_tag": true,
+             "enable_random_event_tag": true,
+             "enable_event_thread_checker": true
+          },
+          "Logging": {
+            "activity_log_output": "json://activity/activity_log.json",
+            "activity_log_rotation_interval": 60,
+            "glog_flush_interval": 1
+          },
+          "Timer": {},
+          "RpcService": {
+            "rpc_enabled": true,
+            "rpc_threads_size": 4,
+            "rpc_port": 9015,
+            "rpc_nic_name": "eth0",
+            "rpc_tags": [],
+            "rpc_message_logging_level": 0,
+            "enable_rpc_reply_checker": true
+          },
+          "ZookeeperClient": {
+            "zookeeper_nodes": "localhost:2181"
+          },
+          "MatchmakingServer": {
+            "enable_dynamic_match": true,
+            "enable_match_progress_callback": false
+          }
+      },
+      "library": "libpongcs.so"
+    }
+  ]
+}

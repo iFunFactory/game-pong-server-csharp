@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7F883590-BCBD-4705-9DB2-6E15BBE2FEEC}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Pongcs</RootNamespace>
+    <AssemblyName>Pongcs</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <ProductVersion>12.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="mkdir -p ${TargetDir}/buildcpp" />
+        <Command type="BeforeBuild" command="cmake ${ProjectDir}/.. -DSKIP_CSHARP_PROJECT_BUILD:BOOL=ON" workingdir="${TargetDir}/buildcpp" />
+        <Command type="BeforeBuild" command="make" workingdir="${TargetDir}/buildcpp" />
+        <Command type="BeforeClean" command="make clean" workingdir="${TargetDir}/buildcpp" />
+        <Command type="Execute" command="/usr/bin/funapi_monodevelop_helper.exe" />
+        <Command type="Execute" command="${TargetDir}/buildcpp/pongcs.lobby-local -tie_to_parent" workingdir="${TargetDir}/buildcpp" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="BeforeBuild" command="mkdir -p ${TargetDir}/buildcpp" />
+        <Command type="BeforeBuild" command="cmake ${ProjectDir}/.. -DSKIP_CSHARP_PROJECT_BUILD:BOOL=ON" workingdir="${TargetDir}/buildcpp" />
+        <Command type="BeforeBuild" command="make" workingdir="${TargetDir}/buildcpp" />
+        <Command type="BeforeClean" command="make clean" workingdir="${TargetDir}/buildcpp" />
+        <Command type="Execute" command="/usr/bin/funapi_monodevelop_helper.exe" />
+        <Command type="Execute" command="${TargetDir}/buildcpp/pongcs-local -tie_to_parent" workingdir="${TargetDir}/buildcpp" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="funapi">
+      <HintPath>\usr\lib\funapi\funapi.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>\usr\lib\funapi\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>\usr\lib\funapi\protobuf-net.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="server.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="common.cs" />
+    <Compile Include="leaderboard.cs" />
+    <Compile Include="utility.cs" />
+    <Compile Include="matchmaking_server.cs" />
+    <Compile Include="lobby_server.cs" />
+    <Compile Include="game_server.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentFiles Include="..\src\pongcs_loggers.json">
+      <Link>ActivityLog\pongcs_loggers.json</Link>
+    </ContentFiles>
+    <Compile Include="ActivityLog\pongcs_loggers.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentFiles Include="..\src\*MANIFEST*.json">
+      <Link>Manifest\*MANIFEST*.json</Link>
+      <Link>Manifest\%(Filename)%(Extension)</Link>
+    </ContentFiles>
+  </ItemGroup>
+  <ItemGroup>
+    <ContentFiles Include="..\src\object_model\*.json">
+      <Link>ObjectModel\*.json</Link>
+      <Link>ObjectModel\%(Filename)%(Extension)</Link>
+    </ContentFiles>
+    <Compile Include="ObjectModel\pongcs_object.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentFiles Include="..\src\*.proto">
+      <Link>Protobuf\*.proto</Link>
+      <Link>Protobuf\%(Filename)%(Extension)</Link>
+    </ContentFiles>
+    <Compile Include="Protobuf\pongcs_messages.cs" />
+    <Compile Include="Protobuf\pongcs_protobuf_helper.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
