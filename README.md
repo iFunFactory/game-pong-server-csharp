@@ -252,6 +252,8 @@ Monodevelop 등의 IDE 프로그램으로 `mono/pongcs.csproj` 를 열었을 때
 
 ## 게임 서버 빌드
 
+(1.0.0-2082 Experimental 버전에서 테스트 되었습니다. 아이펀 엔진 레퍼런스 문서의 [배포판 타입 선택하기](https://www.ifunfactory.com/engine/documents/reference/ko/install.html#select-funapi-repo) 의 설명을 참고하여 엔진을 업데이트 하시기 바랍니다.)
+
 게임 서버를 빌드하는 방법은 크게 2 가지입니다. Monodevelop 등의 IDE 를 이용하는 방법과 Terminal 에서 직접 빌드하는 방법입니다.
 코딩을 하며 빌드할 때는 IDE 를 이용하는 것이 좋으며, Lobby, Game, Matchmaker 서버를 모두 실행하여 테스트 할 때는 Terminal 에서 빌드하는 것이 좋습니다.
 
