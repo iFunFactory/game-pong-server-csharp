@@ -1,4 +1,4 @@
-# Pong Game Server
+# Pong Game Server for C#
 
 이 프로젝트는 iFun Engine을 사용하는 Unity3d 사용자를 위한 샘플 게임 서버입니다. 해당 게임 서버를 테스트하기 위한 환경은 다음과 같습니다.
 
