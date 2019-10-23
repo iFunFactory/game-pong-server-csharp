@@ -4,6 +4,9 @@
     "WinCount": "Integer",
     "LoseCount": "Integer",
     "WinningStreak": "Integer",
-    "WinningStreakDayOfYear": "Integer"
+    "WinningStreakDayOfYear": "Integer",
+    "WinCountSingle": "Integer",
+    "LoseCountSingle": "Integer",
+    "WinningStreakSingle": "Integer"
   }
 }

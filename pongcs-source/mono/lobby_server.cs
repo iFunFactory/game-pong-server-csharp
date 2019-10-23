@@ -18,9 +18,11 @@ namespace Pongcs
 			NetworkHandlerRegistry.RegisterTcpTransportDetachedHandler (new NetworkHandlerRegistry.TcpTransportDetachedHandler (OnTcpDisconnected));
 
 			NetworkHandlerRegistry.RegisterMessageHandler ("login", new NetworkHandlerRegistry.JsonMessageHandler (OnLogin));
+			NetworkHandlerRegistry.RegisterMessageHandler ("singleresult", new NetworkHandlerRegistry.JsonMessageHandler (OnSingleModeResultReceived));
 			NetworkHandlerRegistry.RegisterMessageHandler ("match", new NetworkHandlerRegistry.JsonMessageHandler (OnMatchmaking));
 			NetworkHandlerRegistry.RegisterMessageHandler ("cancelmatch", new NetworkHandlerRegistry.JsonMessageHandler (OnCancelMatchmaking));
 			NetworkHandlerRegistry.RegisterMessageHandler ("ranklist", new NetworkHandlerRegistry.JsonMessageHandler (OnRanklistRequested));
+			NetworkHandlerRegistry.RegisterMessageHandler ("ranklist_single", new NetworkHandlerRegistry.JsonMessageHandler (OnSingleRanklistRequested));
 		}
 
 		// 새 클라이언트가 접속하여 세션이 열릴 때 불리는 함수
@@ -173,9 +175,44 @@ namespace Pongcs
 			response ["id"] = account_id;
 			response ["winCount"] = user.GetWinCount ();
 			response ["loseCount"] = user.GetLoseCount ();
-			response ["curRecord"] = Leaderboard.GetRank (account_id);
+			response ["curRecord"] = Leaderboard.GetRecord (account_id);
+			response ["singleWinCount"] = user.GetWinCountSingle ();
+			response ["singleLoseCount"] = user.GetLoseCountSingle ();
+			response ["singleCurRecord"] = Leaderboard.GetRecord (account_id, true);
 
 			session.SendMessage ("login", response, Session.Encryption.kDefault, Session.Transport.kTcp);
+		}
+
+		public static void OnSingleModeResultReceived(Session session, JObject message)
+		{
+			bool win = Utility.ReadStringFromJsonObject (message, "result") == "win";
+		  HandleSingleModeResult(session, win);
+		}
+
+		public static void HandleSingleModeResult(Session session, bool win) {
+			string id;
+			if (!session.GetFromContext("id", out id))
+			{
+				Log.Warning ("Failed to update singlemode game result. Not logged in.");
+				session.SendMessage("error", Utility.MakeResponse("fail", "not logged in"));
+				return;
+			}
+
+			User user = User.FetchById (id);
+			if (user == null)
+			{
+				Log.Error ("Cannot find uwer's id in db: id={0}", id);
+				return;
+			}
+
+			if (win)
+			{
+				Leaderboard.OnWin(user, true);
+			}
+			else
+			{
+				Leaderboard.OnLose(user, true);
+			}
 		}
 
 		public static void OnMatchmaking(Session session, JObject message)
@@ -283,8 +320,12 @@ namespace Pongcs
 
 		public static void OnRanklistRequested(Session session, JObject message)
 		{
-			JObject response = Leaderboard.GetRankTop8 ();
-			session.SendMessage ("ranklist", response, Session.Encryption.kDefault, Session.Transport.kTcp);
+			Leaderboard.GetAndSendRankTop8 (session);
+		}
+
+		public static void OnSingleRanklistRequested(Session session, JObject message)
+		{
+			Leaderboard.GetAndSendRankTop8 (session, true);
 		}
 
 		// 세션을 정리합니다.

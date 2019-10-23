@@ -191,6 +191,54 @@ public partial class User
   }
 
   /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterWinCountSingleTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "WinCountSingle", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByWinCountSingle (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "WinCountSingle", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterLoseCountSingleTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "LoseCountSingle", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByLoseCountSingle (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "LoseCountSingle", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterWinningStreakSingleTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "WinningStreakSingle", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByWinningStreakSingle (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "WinningStreakSingle", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
   /// Fetches User object randomly from in-memory cache or remote server or database.
   /// </summary>
   public static List<User> FetchRandomly(ulong count, funapi.LockType lock_type = funapi.LockType.kWriteLock)
@@ -374,6 +422,54 @@ public partial class User
   }
 
   /// <summary>
+  /// Gets the value of WinCountSingle.
+  /// </summary>
+  public long GetWinCountSingle()
+  {
+    return object_.GetInteger("WinCountSingle");
+  }
+
+  /// <summary>
+  /// Sets the value of WinCountSingle.
+  /// </summary>
+  public void SetWinCountSingle(long value)
+  {
+    object_.SetInteger("WinCountSingle", value);
+  }
+
+  /// <summary>
+  /// Gets the value of LoseCountSingle.
+  /// </summary>
+  public long GetLoseCountSingle()
+  {
+    return object_.GetInteger("LoseCountSingle");
+  }
+
+  /// <summary>
+  /// Sets the value of LoseCountSingle.
+  /// </summary>
+  public void SetLoseCountSingle(long value)
+  {
+    object_.SetInteger("LoseCountSingle", value);
+  }
+
+  /// <summary>
+  /// Gets the value of WinningStreakSingle.
+  /// </summary>
+  public long GetWinningStreakSingle()
+  {
+    return object_.GetInteger("WinningStreakSingle");
+  }
+
+  /// <summary>
+  /// Sets the value of WinningStreakSingle.
+  /// </summary>
+  public void SetWinningStreakSingle(long value)
+  {
+    object_.SetInteger("WinningStreakSingle", value);
+  }
+
+  /// <summary>
   /// Gets the value of the object as JSON
   /// </summary>
   public Newtonsoft.Json.Linq.JObject ToJson ()
@@ -385,6 +481,9 @@ public partial class User
       json["LoseCount"] = object_.GetInteger("LoseCount");
       json["WinningStreak"] = object_.GetInteger("WinningStreak");
       json["WinningStreakDayOfYear"] = object_.GetInteger("WinningStreakDayOfYear");
+      json["WinCountSingle"] = object_.GetInteger("WinCountSingle");
+      json["LoseCountSingle"] = object_.GetInteger("LoseCountSingle");
+      json["WinningStreakSingle"] = object_.GetInteger("WinningStreakSingle");
     }
 
     return json;
@@ -497,6 +596,27 @@ public static class ObjectImplHelper
       }
     }
     
+    if (json["WinCountSingle"] != null) {
+      if (json["WinCountSingle"].Type != Newtonsoft.Json.Linq.JTokenType.Integer) {
+        funapi.Log.Error("Wrong JSON: User/WinCountSingle type error");
+        return false;
+      }
+    }
+    
+    if (json["LoseCountSingle"] != null) {
+      if (json["LoseCountSingle"].Type != Newtonsoft.Json.Linq.JTokenType.Integer) {
+        funapi.Log.Error("Wrong JSON: User/LoseCountSingle type error");
+        return false;
+      }
+    }
+    
+    if (json["WinningStreakSingle"] != null) {
+      if (json["WinningStreakSingle"].Type != Newtonsoft.Json.Linq.JTokenType.Integer) {
+        funapi.Log.Error("Wrong JSON: User/WinningStreakSingle type error");
+        return false;
+      }
+    }
+    
     return true;
   }
 
@@ -526,6 +646,24 @@ public static class ObjectImplHelper
       funapi.Log.Assert(json["WinningStreakDayOfYear"].Type == Newtonsoft.Json.Linq.JTokenType.Integer);
       Newtonsoft.Json.Linq.JValue winning_streakday_ofyear = json["WinningStreakDayOfYear"] as Newtonsoft.Json.Linq.JValue;
       obj.SetWinningStreakDayOfYear((long)winning_streakday_ofyear);
+    }
+    
+    if (json["WinCountSingle"] != null) {
+      funapi.Log.Assert(json["WinCountSingle"].Type == Newtonsoft.Json.Linq.JTokenType.Integer);
+      Newtonsoft.Json.Linq.JValue win_countsingle = json["WinCountSingle"] as Newtonsoft.Json.Linq.JValue;
+      obj.SetWinCountSingle((long)win_countsingle);
+    }
+    
+    if (json["LoseCountSingle"] != null) {
+      funapi.Log.Assert(json["LoseCountSingle"].Type == Newtonsoft.Json.Linq.JTokenType.Integer);
+      Newtonsoft.Json.Linq.JValue lose_countsingle = json["LoseCountSingle"] as Newtonsoft.Json.Linq.JValue;
+      obj.SetLoseCountSingle((long)lose_countsingle);
+    }
+    
+    if (json["WinningStreakSingle"] != null) {
+      funapi.Log.Assert(json["WinningStreakSingle"].Type == Newtonsoft.Json.Linq.JTokenType.Integer);
+      Newtonsoft.Json.Linq.JValue winning_streaksingle = json["WinningStreakSingle"] as Newtonsoft.Json.Linq.JValue;
+      obj.SetWinningStreakSingle((long)winning_streaksingle);
     }
     
   }
