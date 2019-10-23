@@ -55,7 +55,8 @@ public partial class User
   /// </summary>
   public static Dictionary<System.Guid, User> Fetch(SortedSet<System.Guid> object_ids, funapi.LockType lock_type = funapi.LockType.kWriteLock)
   {
-    Dictionary<System.Guid, funapi.Object> objects = funapi.Object.FetchById("User", object_ids, lock_type);
+    Dictionary<System.Guid, funapi.Object> objects = new Dictionary<System.Guid, funapi.Object> ();
+    funapi.Object.FetchById ("User", object_ids, lock_type, objects);
 
     Dictionary<System.Guid, User> objects2 = new Dictionary<System.Guid, User>();
     foreach(KeyValuePair<System.Guid, funapi.Object> v in objects)
@@ -110,6 +111,86 @@ public partial class User
   }
 
   /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterIdTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "Id", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectById (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "Id", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterWinCountTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "WinCount", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByWinCount (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "WinCount", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterLoseCountTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "LoseCount", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByLoseCount (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "LoseCount", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterWinningStreakTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "WinningStreak", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByWinningStreak (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "WinningStreak", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
+  /// Register condition and action trigger that is fired when object is created/changed
+  /// </summary>
+  public static void RegisterWinningStreakDayOfYearTrigger (funapi.Object.TriggerCondition condition, funapi.Object.TriggerAction action)
+  {
+    funapi.Object.RegisterAttributeTrigger ("User", "WinningStreakDayOfYear", condition, action);
+  }
+
+  /// <summary>
+  /// Search multiple objects with specific attribute
+  /// </summary>
+  public static void SelectByWinningStreakDayOfYear (funapi.ConditionType cond_type, string cond_value, funapi.Object.SelectCallback cb)
+  {
+    funapi.Object.Select ("User", "WinningStreakDayOfYear", "", cond_type, cond_value, cb);
+  }
+
+  /// <summary>
   /// Fetches User object randomly from in-memory cache or remote server or database.
   /// </summary>
   public static List<User> FetchRandomly(ulong count, funapi.LockType lock_type = funapi.LockType.kWriteLock)
@@ -122,6 +203,14 @@ public partial class User
       objects2.Add(obj);
     }
     return objects2;
+  }
+
+  /// <summary>
+  /// Updates a unwritten object data immediately
+  /// </summary>
+  public void WriteImmediately()
+  {
+    object_.WriteImmediately();
   }
 
   /// <summary>
@@ -179,6 +268,18 @@ public partial class User
     }
     ObjectImplHelper.PopulateUserFromJson(this, json);
     return true;
+  }
+
+  /// <summary>
+  /// Get lock type of fetched object
+  /// </summary>
+  public funapi.LockType GetLockType()
+  {
+    if (IsNull()) {
+      return funapi.LockType.kNoneLock;
+    }
+
+    return object_.LockType;
   }
 
   /// <summary>
@@ -271,6 +372,24 @@ public partial class User
   {
     object_.SetInteger("WinningStreakDayOfYear", value);
   }
+
+  /// <summary>
+  /// Gets the value of the object as JSON
+  /// </summary>
+  public Newtonsoft.Json.Linq.JObject ToJson ()
+  {
+    Newtonsoft.Json.Linq.JObject json = new Newtonsoft.Json.Linq.JObject ();
+    if (object_ != null && !object_.IsNull ()) {
+      json["Id"] = object_.GetString("Id");
+      json["WinCount"] = object_.GetInteger("WinCount");
+      json["LoseCount"] = object_.GetInteger("LoseCount");
+      json["WinningStreak"] = object_.GetInteger("WinningStreak");
+      json["WinningStreakDayOfYear"] = object_.GetInteger("WinningStreakDayOfYear");
+    }
+
+    return json;
+  }
+
 }
 
 

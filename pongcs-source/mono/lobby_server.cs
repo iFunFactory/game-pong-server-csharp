@@ -71,9 +71,10 @@ namespace Pongcs
 					return;
 				}
 
-				Authentication.AuthResponseHandler facebook_auth_cb = (Authentication.AccountAuthRequest param_request,
-				                                                       Authentication.AccountAuthResponse param_response,
-				                                                       bool param_error) => {
+				FacebookAuthentication.AuthenticationResponseHandler facebook_auth_cb =
+						(FacebookAuthentication.AuthenticationRequest param_request,
+				     FacebookAuthentication.AuthenticationResponse param_response,
+				     bool param_error) => {
 					if (param_error) {
 						// 인증에 오류가 있습니다. 장애 오류입니다.
 						Log.Error("Failed to authenticate. Facebook authentication error: id={0}", account_id);
@@ -86,7 +87,7 @@ namespace Pongcs
 						// 인증에 실패했습니다. 올바르지 않은 access token 입니다.
 						Log.Info("Failed to authenticate. Wrong Facebook access token: id={0}", account_id);
 						session.SendMessage("login",
-						                    Utility.MakeResponse("nop", "facebook authentication fail: " + param_response.ReasonDescription),
+						                    Utility.MakeResponse("nop", "facebook authentication fail: " + param_response.Error.Message),
 						                    Session.Encryption.kDefault, Session.Transport.kTcp);
 						return;
 					}
@@ -98,10 +99,9 @@ namespace Pongcs
 					AccountManager.CheckAndSetLoggedInAsync(account_id, session, new AccountManager.LoginCallback(OnLogin_Completed));
 				};
 
-				Authentication.AccountAuthRequest request =
-					new Authentication.AccountAuthRequest (
-						"Facebook", account_id, Authentication.MakeFacebookAuthKey (access_token));
-				Authentication.Authenticate (request, new Authentication.AuthResponseHandler (facebook_auth_cb));
+				FacebookAuthentication.AuthenticationRequest request =
+						new FacebookAuthentication.AuthenticationRequest (access_token);
+				FacebookAuthentication.Authenticate (request, new FacebookAuthentication.AuthenticationResponseHandler (facebook_auth_cb));
 			} else {
 				// Guest 는 별도의 인증 없이 로그인 합니다.
 				AccountManager.CheckAndSetLoggedInAsync (account_id, session, new AccountManager.LoginCallback (OnLogin_Completed));

@@ -64,10 +64,9 @@ namespace Pongcs
 					session.SendMessage ("start", response);
 					opponent_session.SendMessage ("start", response);
 				}
-			} else {
-				// 상대가 접속을 종료했습니다.
-				session.SendMessage ("match", Utility.MakeResponse ("opponent disconnected"),
-				                     Session.Encryption.kDefault, Session.Transport.kTcp);
+			}
+			else {
+				// 아직 상대가 방에 없기 때문에 기다린다.
 			}
 		}
 

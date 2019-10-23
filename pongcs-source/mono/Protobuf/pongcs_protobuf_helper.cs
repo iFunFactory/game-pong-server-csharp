@@ -9,7 +9,7 @@ namespace Pongcs
     {
         FunMessage_pbuf_another = 17,
         FunMessage_pbuf_echo = 16,
-        FunMulticastMessage_pbuf_hello = 9,
+        FunMulticastMessage_pbuf_hello = 16,
         FunRpcMessage_echo_rpc = 32,
     }
 
@@ -64,8 +64,9 @@ namespace funapi
 {
     public enum ExtendedMessageFieldNumber
     {
+        FunDedicatedServerRpcMessage_ds_rpc_sys = 8,
         FunMessage_multicast = 8,
-        FunMulticastMessage_chat = 8,
+        FunMulticastMessage_chat = 10,
         FunRpcMessage_error = 8,
         FunRpcMessage_info = 9,
     }
@@ -73,6 +74,16 @@ namespace funapi
 
     public static class ProtobufHelper
     {
+        public static bool TryGetExtension_ds_rpc_sys (this FunDedicatedServerRpcMessage message, out FunDedicatedServerRpcSystemMessage value)
+        {
+            return ProtoBuf.Extensible.TryGetValue (message, (int)ExtendedMessageFieldNumber.FunDedicatedServerRpcMessage_ds_rpc_sys, out value);
+        }
+
+        public static void AppendExtension_ds_rpc_sys (this FunDedicatedServerRpcMessage message, FunDedicatedServerRpcSystemMessage value)
+        {
+            ProtoBuf.Extensible.AppendValue (message, (int)ExtendedMessageFieldNumber.FunDedicatedServerRpcMessage_ds_rpc_sys, value);
+        }
+
         public static bool TryGetExtension_multicast (this FunMessage message, out FunMulticastMessage value)
         {
             return ProtoBuf.Extensible.TryGetValue (message, (int)ExtendedMessageFieldNumber.FunMessage_multicast, out value);

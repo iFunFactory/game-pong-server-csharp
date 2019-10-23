@@ -2,13 +2,12 @@
 
 이 프로젝트는 iFun Engine을 사용하는 Unity3d 사용자를 위한 샘플 게임 서버입니다. 해당 게임 서버를 테스트하기 위한 환경은 다음과 같습니다.
 
-* Ubuntu 14.04 혹은 16.04, CentOS 6 혹은 7
+* Ubuntu 16.04 혹은 18.04, CentOS 7
 * mysql 혹은 mariadb
 * zookeeper
-* funapi-authenticator
 * funapi-leaderboard
 
-**해당 문서에서는 Ubuntu 14.04에서 설정하는 방법을 서술합니다.**
+**해당 문서에서는 Ubuntu 16.04에서 설정하는 방법을 서술합니다.**
 
 ## 목차
 
@@ -17,8 +16,6 @@
     - [mysql 설치](#mysql-설치)
     - [mysql 설치 후 환경설정](#mysql-설치-후-환경설정)
     - [zookeeper 설치](#zookeeper-설치)
-    - [funapi-authenticator 설치](#funapi-authenticator-설치)
-    - [funapi-authenticator 설치 후 환경설정](#funapi-authenticator-설치-후-환경설정)
     - [funapi-leaderboard 설치](#funapi-leaderboard-설치)
     - [funapi-leaderboard 설치 후 환경설정](#funapi-leaderboard-설치-후-환경설정)
 * [프로젝트 디렉터리 구조](#프로젝트-디렉터리-구조)
@@ -36,7 +33,7 @@ git clone https://github.com/iFunFactory/game-pong-server-csharp.git
 
 ## 서버 환경 설정
 
-Pong-server를 구동하기 위해 `mysql`, `zookeeper`, `funapi-authenticator`, `funapi-leaderboard`의 설치, 환경설정이 필요합니다. 각 개발환경 설정에 대한 자세한 내용은 [튜토리얼](https://www.ifunfactory.com/engine/documents/tutorial/ko/project.html#object-relational-mapping-db)과 [메뉴얼](https://www.ifunfactory.com/engine/documents/reference/ko/development-environment.html)을 참고해 주세요.
+Pong-server를 구동하기 위해 `mysql`, `zookeeper`, `funapi-leaderboard`의 설치, 환경설정이 필요합니다. 각 개발환경 설정에 대한 자세한 내용은 [튜토리얼](https://www.ifunfactory.com/engine/documents/tutorial/ko/project.html#object-relational-mapping-db)과 [메뉴얼](https://www.ifunfactory.com/engine/documents/reference/ko/development-environment.html)을 참고해 주세요.
 
 #### mysql 설치
 `mysql server`가 설치되어있지 않다면 아래의 명령어를 통해 mysql server를 설치해주세요.
@@ -56,6 +53,8 @@ mysql> grant all privileges on *.* to 'funapi'@'localhost';
 
 mysql> create database funapi;
 
+mysql> create database funapi_leaderboard;
+
 $ sudo service mysql start
 ```
 
@@ -66,69 +65,9 @@ $ sudo apt-get install zookeeper zookeeperd
 $ sudo service zookeeper start
 ```
 
-#### funapi-authenticator 설치
-
-authenticator는 agent구조로 되어있습니다. 아래의 명령어를 이용해 설치합니다.
-
-```bash
-$ sudo apt-get update
-$ sudo apt-get install funapi-authenticator1
-```
-
-#### funapi-authenticator 설치 후 환경설정
-
-설치가 완료되었다면 authenticator를 사용하기 위해 환경설정이 필요합니다. 먼저 `/etc/default/funapi-authenticator` 파일을 열고, `enabled = 1` 로 설정합니다. 
-
-```bash
-$ sudo vim /etc/default/funapi-authenticator
-```
-
-이후, 아래의 명령어를 입력하여 MANIFEST.json 파일을 열어주세요.
-
-```bash
-$ sudo vim /usr/share/funapi-authenticator/default/manifests/MANIFEST.json
-```
-
-`tcp_listen_port` 는 authenticator 클라이언트가 인증 에이전트로 접속하기 위한 port number입니다.
-
-```json
-...
-"arguments": {
-  "tcp_listen_port" : 12800,
-  "http_listen_port" : 12801,
-  "bypass" : false,
-  "ip_address_table_path" : "acl/ip_address_table"
-},
-...
-```
-
-다음으로, `src/MANIFEST.json` 의 컴포넌트 설정을 해주어야 합니다. 해당 프로젝트에서는 **서버 flavor 기능**을 사용하여 `'lobby'` 서버에서 인증(authentication)이 이루어집니다. 따라서 `MANIFEST.lobby.json` 파일을 수정해야 합니다.
-
-```bash
-$ sudo vim /game-pong-server-csharp/pongcs-source/src/MANIFEST.lobby.json
-```
-
-위의 명령어를 입력하여 파일을 열고, 다음과 같이 use_authenticator를 true로 변경합니다. 그리고 해당 인증 에이전트인 funapi-authenticator의 ip주소와 port번호를 각각 입력해줍니다. 여기서, `remote_authenticator_port`는 **/usr/share/funapi-authenticator/manifests/src/MANIFEST.json파일**의 `tcp_listen_port`와 같은 값이여야 합니다.
-
-```json
-...
-"AuthenticationClient": {
-  "use_authenticator" : true,
-  "remote_authenticator_ip_address" : "127.0.0.1",
-  "remote_authenticator_port" : 12800
-}
-...
-```
-
-설정이 모두 완료된 후에는 다음 명령어를 통해 실행합니다.
-
-```bash
-$ sudo service funapi-authenticator start
-```
-
 #### funapi-leaderboard 설치
 
-leaderboard 역시 authenticator와 마찬가지로 agent구조로 되어있습니다. 아래의 명령어를 이용해 설치합니다.
+leaderboard는 agent구조로 되어있습니다. 아래의 명령어를 이용해 설치합니다.
 
 ```bash
 $ sudo apt-get update
@@ -143,7 +82,7 @@ $ sudo apt-get install redis-server
 
 #### funapi-leaderboard 설치 후 환경설정
 
-리더보드 에이전트가 정상적으로 설치되었다면 `/usr/share/funapi-leaderboard/default/manifests/MANIFEST.json` 설정파일이 생성됩니다. 
+리더보드 에이전트가 정상적으로 설치되었다면 `/usr/share/funapi-leaderboard/default/manifests/MANIFEST.json` 설정파일이 생성됩니다.
 
 `MANIFEST.json` 파일을 열고, 아래와 같이 변경해주세요.
 
@@ -252,7 +191,7 @@ Monodevelop 등의 IDE 프로그램으로 `mono/pongcs.csproj` 를 열었을 때
 
 ## 게임 서버 빌드
 
-(1.0.0-2082 Experimental 버전에서 테스트 되었습니다. 아이펀 엔진 레퍼런스 문서의 [배포판 타입 선택하기](https://www.ifunfactory.com/engine/documents/reference/ko/install.html#select-funapi-repo) 의 설명을 참고하여 엔진을 업데이트 하시기 바랍니다.)
+(1.0.0-4358 Experimental 버전에서 테스트 되었습니다. 아이펀 엔진 레퍼런스 문서의 [배포판 타입 선택하기](https://www.ifunfactory.com/engine/documents/reference/ko/install.html#select-funapi-repo) 의 설명을 참고하여 엔진을 업데이트 하시기 바랍니다.)
 
 게임 서버를 빌드하는 방법은 크게 2 가지입니다. Monodevelop 등의 IDE 를 이용하는 방법과 Terminal 에서 직접 빌드하는 방법입니다.
 코딩을 하며 빌드할 때는 IDE 를 이용하는 것이 좋으며, Lobby, Game, Matchmaker 서버를 모두 실행하여 테스트 할 때는 Terminal 에서 빌드하는 것이 좋습니다.
@@ -290,9 +229,36 @@ iFunEngine은 빌드 후 `-local` 스크립트와 `-launcher` 스크립트를 �
 * `matchmaker server` : matchmaking 을 처리하는 서버입니다.
 * `game server` : 매칭된 클라이언트가 머무르는 서버입니다.
 
-flavor에 대한 자세한 내용은 [메뉴얼](https://www.ifunfactory.com/engine/documents/reference/ko/game-management.html#flavors)을 참고해 주세요.
+flavor에 대한 자세한 내용은 [메뉴얼](https://www.ifunfactory.com/engine/documents/reference/ko/mgmt-packaging.html#flavor)을 참고해 주세요.
 
 ## 게임 서버 실행
+
+서버를 실행하기 전에, 서버 이동을 위한 하드웨어 정보 설정이 필요합니다. 각 서버의 설정파일은 manifest 디렉터리 하위에 있는 lobby, matchmaker, game 디렉터리 안에 생성됩니다. 먼저, ifconfig명령 혹은 ip link 명령으로 네트워크 인터페이스 이름을 확인해주세요.
+
+```bash
+$ ifconfig
+# 또는
+$ ip link
+```
+
+네트워크 인터페이스 이름을 확인하셨으면, lobby 서버의 MANIFEST.json 파일을 열어주세요.
+
+$ sudo vim manifest/lobby/MANIFEST.json
+아래의 external_ip_resolvers 내용을 `"nic:{ifconfig에서 확인한 네트워크 인터페이스 이름}"`으로 변경해주세요.
+
+```json
+...
+"HardwareInfo": {
+  "external_ip_resolvers": "aws,nic:eth0"
+},
+...
+```
+
+완료하셨으면, game 서버의 MANIFEST.json 파일도 동일하게 수정해주세요.
+
+```bash
+$ sudo vim manifest/game/MANIFEST.json
+```
 
 ### Monodevelop 에서 실행하기
 
@@ -350,4 +316,4 @@ I0412 16:25:51.601130 29206 (Mono)lobby_server.cs:144] Succeed to login: id=2976
 I0109 00:00:00.632324  9555 (Mono)lobby_server.cs:266] Failed in matchmaking. Timeout: id=4f4ccf9233f6cd83978a5bd21ad41e1e61829d81_Editor
 ```
 
-**[순위]** 버튼을 누르면 daily 랭킹을 확인할 수 있습니다. 순위는 매일 05시에 갱신됩니다.
+**[순위]** 버튼을 누르면 랭킹을 확인할 수 있습니다.

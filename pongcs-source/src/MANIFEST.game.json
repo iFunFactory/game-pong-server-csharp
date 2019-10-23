@@ -34,7 +34,7 @@
           },
           "SessionService": {
             "tcp_json_port": 7012,
-            "udp_json_port": 7013,
+            "udp_json_port": 0,
             "http_json_port": 0,
             "tcp_protobuf_port": 0,
             "udp_protobuf_port": 0,
@@ -78,7 +78,7 @@
             "enable_assert_no_rollback" : true
           },
           "AccountManager": {
-	    "redirection_secret" : "31b87ff9d624936d97fe4138b17106ddb35ead5626a3ed785add90b24f2b83b7"
+            "redirection_secret" : "31b87ff9d624936d97fe4138b17106ddb35ead5626a3ed785add90b24f2b83b7"
           },
           "CounterService": {
             "counter_flush_interval_in_sec": 0
@@ -118,7 +118,6 @@
             "rpc_enabled": true,
             "rpc_threads_size": 4,
             "rpc_port": 7015,
-            "rpc_nic_name": "eth0",
             "rpc_tags": [],
             "rpc_message_logging_level": 0,
             "enable_rpc_reply_checker": true
@@ -127,7 +126,7 @@
             "zookeeper_nodes": "localhost:2181"
           },
           "HardwareInfo": {
-            "external_ip_resolvers": "aws,nic:eth0,nat:93.184.216.34:tcp+pbuf=8012:http+json=8018"
+            "external_ip_resolvers": "aws,nic:eth0"
           },
           "Curl": {
             "curl_threads_size": 1
