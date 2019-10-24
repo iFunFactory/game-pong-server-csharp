@@ -13,6 +13,7 @@ namespace Pongcs
 			NetworkHandlerRegistry.RegisterSessionHandler (new NetworkHandlerRegistry.SessionOpenedHandler (OnSessionOpened),
 			                                               new NetworkHandlerRegistry.SessionClosedHandler (OnSessionClosed));
 			NetworkHandlerRegistry.RegisterTcpTransportDetachedHandler (new NetworkHandlerRegistry.TcpTransportDetachedHandler (OnTcpDisconnected));
+			NetworkHandlerRegistry.RegisterWebSocketTransportDetachedHandler (new NetworkHandlerRegistry.WebSocketTransportDetachedHandler (OnWebSocketDisconnected));
 
 			NetworkHandlerRegistry.RegisterMessageHandler ("ready", new NetworkHandlerRegistry.JsonMessageHandler (OnReady));
 			NetworkHandlerRegistry.RegisterMessageHandler ("relay", new NetworkHandlerRegistry.JsonMessageHandler (OnRelay));
@@ -42,7 +43,18 @@ namespace Pongcs
 			if (session.GetFromContext ("id", out id)) {
 				Log.Info ("TCP disconnected: id={0}", id);
 			}
-			// 세션을 초기과 합니다.
+			// 세션을 초기화 합니다.
+			FreeUser(session);
+		}
+
+		// Websocket 연결이 끊기면 불립니다.
+		public static void OnWebSocketDisconnected(Session session)
+		{
+			string id = null;
+			if (session.GetFromContext ("id", out id)) {
+				Log.Info ("Websocket disconnected: id={0}", id);
+			}
+			// 세션을 초기화 합니다.
 			FreeUser(session);
 		}
 
@@ -55,7 +67,9 @@ namespace Pongcs
 			Session opponent_session = AccountManager.FindLocalSession (opponent_id);
 
 			// 상대의 상태를 확인합니다.
-			if (opponent_session != null && opponent_session.IsTransportAttached (Session.Transport.kTcp)) {
+			if (opponent_session != null &&
+			    (opponent_session.IsTransportAttached (Session.Transport.kTcp) ||
+			     opponent_session.IsTransportAttached (Session.Transport.kWebSocket))) {
 				long is_opponent_ready = 0;
 				opponent_session.GetFromContext ("ready", out is_opponent_ready);
 				if (is_opponent_ready == 1) {
@@ -159,7 +173,7 @@ namespace Pongcs
 				Leaderboard.OnWin (opponent_user);
 				Leaderboard.OnLose (user);
 
-				opponent_session.SendMessage ("result", Utility.MakeResponse ("win"), Session.Encryption.kDefault, Session.Transport.kTcp);
+				opponent_session.SendMessage ("result", Utility.MakeResponse ("win"), Session.Encryption.kDefault);
 
 				Common.Redirect (opponent_session, "lobby");
 

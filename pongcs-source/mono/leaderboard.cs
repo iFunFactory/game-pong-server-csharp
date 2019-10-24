@@ -106,7 +106,7 @@ namespace Pongcs
 				result ["ranks"] [index_str] ["id"] = record.PlayerAccount.Id;
 				++index;
 			}
-			session.SendMessage (msgtype, result, Session.Encryption.kDefault, Session.Transport.kTcp);
+			session.SendMessage (msgtype, result, Session.Encryption.kDefault);
 		}
 
 		public static void GetAndSendRankTop8(Session session, bool single = false)

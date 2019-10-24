@@ -81,7 +81,7 @@ namespace Pongcs
 						// 인증에 오류가 있습니다. 장애 오류입니다.
 						Log.Error("Failed to authenticate. Facebook authentication error: id={0}", account_id);
 						session.SendMessage("login", Utility.MakeResponse("nop", "facebook authentication error"),
-						                    Session.Encryption.kDefault, Session.Transport.kTcp);
+						                    Session.Encryption.kDefault);
 						return;
 					}
 
@@ -90,7 +90,7 @@ namespace Pongcs
 						Log.Info("Failed to authenticate. Wrong Facebook access token: id={0}", account_id);
 						session.SendMessage("login",
 						                    Utility.MakeResponse("nop", "facebook authentication fail: " + param_response.Error.Message),
-						                    Session.Encryption.kDefault, Session.Transport.kTcp);
+						                    Session.Encryption.kDefault);
 						return;
 					}
 
@@ -118,7 +118,7 @@ namespace Pongcs
 				//  2. 이 Session 이 이미 로그인 되어 있는 경우)
 				Log.Info ("Failed to login: id={0}", account_id);
 				session.SendMessage ("login", Utility.MakeResponse ("nop", "failed to login"),
-				                     Session.Encryption.kDefault, Session.Transport.kTcp);
+				                     Session.Encryption.kDefault);
 
 				// 아래 로그아웃 처리를 한 후 자동으로 로그인 시킬 수 있지만
 				// 일단 클라이언트에서 다시 시도하도록 합니다.
@@ -180,7 +180,7 @@ namespace Pongcs
 			response ["singleLoseCount"] = user.GetLoseCountSingle ();
 			response ["singleCurRecord"] = Leaderboard.GetRecord (account_id, true);
 
-			session.SendMessage ("login", response, Session.Encryption.kDefault, Session.Transport.kTcp);
+			session.SendMessage ("login", response, Session.Encryption.kDefault);
 		}
 
 		public static void OnSingleModeResultReceived(Session session, JObject message)
@@ -272,7 +272,7 @@ namespace Pongcs
 					response = Utility.MakeResponse("Error");
 				}
 
-				session.SendMessage("match", response, Session.Encryption.kDefault, Session.Transport.kTcp);
+				session.SendMessage("match", response, Session.Encryption.kDefault);
 			};
 
 			// 빈 Player Context 를 만듭니다. 지금 구현에서는 Matchmaking 서버가
@@ -312,7 +312,7 @@ namespace Pongcs
 					response = Utility.MakeResponse("Error");
 				}
 
-				session.SendMessage("match", response, Session.Encryption.kDefault, Session.Transport.kTcp);
+				session.SendMessage("match", response, Session.Encryption.kDefault);
 			};
 
 			funapi.Matchmaking.Client.Cancel ((int)MatchmakingType.kMatch1vs1, id, cancel_cb);
