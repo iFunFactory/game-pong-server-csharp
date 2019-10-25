@@ -296,7 +296,7 @@ I0109 00:00:00.094981  9203 manifest_handler.cc:742] Starting PongServer
 
 먼저, [여기](https://github.com/iFunFactory/game-pong)에서 pong 게임 클라이언트를 다운받아주세요.
 
-다음으로, 다운받은 Pong Client 프로젝트를 실행시켜 Main씬을 로드합니다. `NetworkManager` 오브젝트 의 Server addr값을 현재 서버의 주소로 변경해주세요.
+다음으로, 다운받은 Pong Client 프로젝트를 실행시켜 Main씬을 로드합니다. `NetworkManager` 오브젝트 의 Server addr값을 현재 서버의 주소로 변경해주세요.  pong 게임은 `Tcp` 또는 `Websocket` 으로 통신해야하므로 Protocol 은 `Tcp` 또는 `Websocket` 을 선택해주세요.
 
 게임을 실행시키고 **[게스트 로그인]** 혹은 **[페이스북 로그인]** 버튼을 누르면 **클라이언트**에서 **lobby 서버**로 로그인 요청을 보내게 됩니다. **lobby 서버**가 요청을 받아 정상적으로 인증되면 클라이언트를 **lobby server**로 이동시키고 클라이언트에서는 **[대전시작]** 버튼이 활성화됩니다. **lobby 서버**에서는 아래와 같은 로그인 성공 메시지를 출력함을 확인할 수 있습니다.
 
