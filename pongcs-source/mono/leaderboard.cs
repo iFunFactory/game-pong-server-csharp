@@ -88,35 +88,58 @@ namespace Pongcs
 
 		public static void OnGetRankTop8(
 				funapi.Leaderboard.QueryRequest request,	funapi.Leaderboard.QueryResponse response,
-				bool error, Session session, bool single) {
+				bool error, Session session, Session.EncodingScheme encoding, bool single) {
 			if (error) {
 				Log.Error ("Failed to query leaderboard. Leaderboard system error.");
 				return;
 			}
 			string msgtype = single ? "ranklist_single" : "ranklist";
 
-			JObject result = new JObject();
-			result ["ranks"] = new JObject();
-			int index = 0;
-			foreach (funapi.Leaderboard.Record record in response.Records) {
-				string index_str = index.ToString ();
-				result ["ranks"] [index_str] = new JObject();
-				result ["ranks"] [index_str] ["rank"] = record.Rank;
-				result ["ranks"] [index_str] ["score"] = record.Score;
-				result ["ranks"] [index_str] ["id"] = record.PlayerAccount.Id;
-				++index;
+			if (encoding == Session.EncodingScheme.kJsonEncoding)
+			{
+				JObject result = new JObject();
+				result ["ranks"] = new JObject();
+				int index = 0;
+				foreach (funapi.Leaderboard.Record record in response.Records) {
+					string index_str = index.ToString ();
+					result ["ranks"] [index_str] = new JObject();
+					result ["ranks"] [index_str] ["rank"] = record.Rank;
+					result ["ranks"] [index_str] ["score"] = record.Score;
+					result ["ranks"] [index_str] ["id"] = record.PlayerAccount.Id;
+					++index;
+				}
+				session.SendMessage (msgtype, result, Session.Encryption.kDefault);
 			}
-			session.SendMessage (msgtype, result, Session.Encryption.kDefault);
+			else
+			{
+				Log.Assert(encoding == Session.EncodingScheme.kProtobufEncoding);
+
+			  FunMessage message = new FunMessage ();
+				LobbyRankListReply reply = new LobbyRankListReply ();
+				reply.result = "Success";
+				int index = 0;
+				foreach (funapi.Leaderboard.Record record in response.Records) {
+					LobbyRankListReply.RankElement el = new LobbyRankListReply.RankElement ();
+					string index_str = index.ToString ();
+					el.rank = record.Rank;
+					el.score = (int) record.Score;
+					el.id = record.PlayerAccount.Id;
+					reply.rank.Add (el);
+					++index;
+				}
+        message.AppendExtension_lobby_rank_list_repl (reply);
+				session.SendMessage (msgtype, message, Session.Encryption.kDefault);
+			}
 		}
 
-		public static void GetAndSendRankTop8(Session session, bool single = false)
+		public static void GetAndSendRankTop8(Session session, Session.EncodingScheme encoding, bool single = false)
 		{
 			funapi.Leaderboard.QueryRequest request =
 				new funapi.Leaderboard.QueryRequest (
 					single ? kSingleLeaderboardId : kLeaderboardId, funapi.Leaderboard.Timespan.kAllTime,
 					new funapi.Leaderboard.Range (funapi.Leaderboard.RangeType.kFromTop, 0, 7));
 
-			funapi.Leaderboard.GetLeaderboard (request, (_1, _2, _3) => { OnGetRankTop8(_1, _2, _3, session, single); });
+			funapi.Leaderboard.GetLeaderboard (request, (_1, _2, _3) => { OnGetRankTop8(_1, _2, _3, session, encoding, single); });
 		}
 	}
 }

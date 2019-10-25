@@ -244,7 +244,7 @@ $ ip link
 네트워크 인터페이스 이름을 확인하셨으면, lobby 서버의 MANIFEST.json 파일을 열어주세요.
 
 $ sudo vim manifest/lobby/MANIFEST.json
-아래의 external_ip_resolvers 내용을 `"nic:{ifconfig에서 확인한 네트워크 인터페이스 이름}"`으로 변경해주세요.
+아래의 external_ip_resolvers 내용을 `nic:{ifconfig 에서 확인한 네트워크 인터페이스 이름}`으로 변경해주세요.
 
 ```json
 ...
