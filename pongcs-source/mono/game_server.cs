@@ -201,7 +201,6 @@ namespace Pongcs
 
 				opponent_session.DeleteFromContext ("opponent");
 				Common.Redirect (opponent_session, "lobby");
-				FreeUser (opponent_session, encoding);
 			}
 
 			// 패배 확인 메세지를 보냅니다.
@@ -217,7 +216,6 @@ namespace Pongcs
 			}
 			session.DeleteFromContext ("opponent");
 			Common.Redirect (session, "lobby");
-			FreeUser (session, encoding);
 		}
 
 		// 세션을 정리합니다.
@@ -273,9 +271,6 @@ namespace Pongcs
 				}
 
 				Common.Redirect (opponent_session, "lobby");
-
-				opponent_session.DeleteFromContext("opponent");
-				FreeUser(opponent_session, encoding);
 			};
 
 			Event.Invoke (update);

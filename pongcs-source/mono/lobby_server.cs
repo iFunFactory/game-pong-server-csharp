@@ -401,7 +401,6 @@ namespace Pongcs
 					}
 					// 유저를 Game 서버로 보냅니다.
 					Common.Redirect(session, "game");
-					FreeUser(session);
 				} else if (result == funapi.Matchmaking.MatchResult.kAlreadyRequested) {
 					// Matchmaking 요청을 중복으로 보냈습니다.
 					Log.Info("Failed in matchmaking. Already requested: id={0}", player_id);
