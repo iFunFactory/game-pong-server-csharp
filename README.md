@@ -4,7 +4,7 @@
 
 * Ubuntu 16.04 혹은 18.04, CentOS 7
 * mysql 혹은 mariadb
-* zookeeper
+* redis-server
 * funapi-leaderboard
 
 **해당 문서에서는 Ubuntu 16.04에서 설정하는 방법을 서술합니다.**
@@ -15,7 +15,7 @@
 * [서버 환경 설정](#서버-환경-설정)
     - [mysql 설치](#mysql-설치)
     - [mysql 설치 후 환경설정](#mysql-설치-후-환경설정)
-    - [zookeeper 설치](#zookeeper-설치)
+    - [redis-server 설치](#redis-server-설치)
     - [funapi-leaderboard 설치](#funapi-leaderboard-설치)
     - [funapi-leaderboard 설치 후 환경설정](#funapi-leaderboard-설치-후-환경설정)
 * [프로젝트 디렉터리 구조](#프로젝트-디렉터리-구조)
@@ -33,7 +33,7 @@ git clone https://github.com/iFunFactory/game-pong-server-csharp.git
 
 ## 서버 환경 설정
 
-Pong-server를 구동하기 위해 `mysql`, `zookeeper`, `funapi-leaderboard`의 설치, 환경설정이 필요합니다. 각 개발환경 설정에 대한 자세한 내용은 [튜토리얼](https://www.ifunfactory.com/engine/documents/tutorial/ko/project.html#object-relational-mapping-db)과 [메뉴얼](https://www.ifunfactory.com/engine/documents/reference/ko/development-environment.html)을 참고해 주세요.
+Pong-server를 구동하기 위해 `mysql`, `redis-server`, `funapi-leaderboard`의 설치, 환경설정이 필요합니다. 각 개발환경 설정에 대한 자세한 내용은 [튜토리얼](https://www.ifunfactory.com/engine/documents/tutorial/ko/project.html#object-relational-mapping-db)과 [메뉴얼](https://www.ifunfactory.com/engine/documents/reference/ko/development-environment.html)을 참고해 주세요.
 
 #### mysql 설치
 `mysql server`가 설치되어있지 않다면 아래의 명령어를 통해 mysql server를 설치해주세요.
@@ -58,11 +58,11 @@ mysql> create database funapi_leaderboard;
 $ sudo service mysql start
 ```
 
-#### zookeeper 설치
+#### redis-server 설치
 
 ```bash
-$ sudo apt-get install zookeeper zookeeperd
-$ sudo service zookeeper start
+$ sudo apt-get install redis-server
+$ sudo service redis-server start
 ```
 
 #### funapi-leaderboard 설치
@@ -72,12 +72,6 @@ leaderboard는 agent구조로 되어있습니다. 아래의 명령어를 이용�
 ```bash
 $ sudo apt-get update
 $ sudo apt-get install funapi-leaderboard1
-```
-
-또한 리더보드는 캐시 처리를 위해 `Redis` 를 사용합니다. 아래 명령어를 이용하여 Redis를 설치합니다.
-
-```bash
-$ sudo apt-get install redis-server
 ```
 
 #### funapi-leaderboard 설치 후 환경설정
@@ -260,7 +254,14 @@ $ sudo vim manifest/lobby/MANIFEST.json
   "rpc_nic_name": "eth0",
   "rpc_tags": [],
   "rpc_message_logging_level": 0,
-  "enable_rpc_reply_checker": true
+  "enable_rpc_reply_checker": true,
+  "rpc_redis_hosts": [
+    {
+      "host": "127.0.0.1:6379",
+      "database": 0,
+      "auth": ""
+    }
+  ]
 },
 ...
 ```
