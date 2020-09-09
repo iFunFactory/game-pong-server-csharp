@@ -52,6 +52,9 @@
           "MatchmakingServer": {
             "enable_dynamic_match": true,
             "enable_match_progress_callback": false
+          },
+          "Curl": {
+            "curl_threads_size": 1
           }
       },
       "library": "libpongcs.so"
