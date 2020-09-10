@@ -135,7 +135,7 @@ namespace Pongcs
 		public static void OnRelay(Session session, JObject message)
 		{
 			string opponent_id;
-			Log.Verify (session.GetFromContext ("opponent", out opponent_id));
+			session.GetFromContext ("opponent", out opponent_id);
 			Session opponent_session = AccountManager.FindLocalSession (opponent_id);
 			if (opponent_session != null) {
 				Log.Info ("message reply: sid={0}", session.Id);
@@ -146,7 +146,7 @@ namespace Pongcs
 		public static void OnRelay2(Session session, FunMessage message)
 		{
 			string opponent_id;
-			Log.Verify (session.GetFromContext ("opponent", out opponent_id));
+			session.GetFromContext ("opponent", out opponent_id);
 			Session opponent_session = AccountManager.FindLocalSession (opponent_id);
 			if (opponent_session != null) {
 				Log.Info ("message reply: sid={0}", session.Id);
